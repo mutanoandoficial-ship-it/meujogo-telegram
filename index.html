@@ -3,134 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jogo da Velha Telegram</title>
+    <title>Central Premium Telegram</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #1c2024;
-            color: white;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 90vh;
-        }
-        h1 { margin-bottom: 10px; color: #3399ff; }
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 5px;
-            margin-top: 20px;
-        }
-        .cell {
-            width: 100px;
-            height: 100px;
-            background-color: #2b3036;
-            border: 2px solid #3399ff;
-            font-size: 2.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border-radius: 10px;
-        }
-        .cell:active { background-color: #3e454e; }
-        #status { margin-top: 20px; font-size: 1.2rem; font-weight: bold; }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            background-color: #3399ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+        body { font-family: Arial, sans-serif; background-color: #0e1621; color: white; text-align: center; padding: 20px; margin: 0; }
+        h1 { color: #2481cc; font-size: 1.6rem; margin-bottom: 5px; }
+        p { color: #7f8c8d; font-size: 0.9rem; margin-top: 0; }
+        .box { background: #17212b; padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #2b394a; text-align: left; }
+        .box h3 { margin-top: 0; color: #f5f6fa; text-align: center; }
+        .btn { background: #2481cc; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; display: block; text-decoration: none; box-sizing: border-box; margin-top: 10px; text-align: center; }
+        .btn-green { background: #2ecc71; }
+        input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #2481cc; background: #0e1621; color: white; margin-bottom: 10px; box-sizing: border-box; }
+        .result { background: #202b36; padding: 15px; margin-top: 15px; border-radius: 5px; display: none; text-align: center; border-left: 4px solid #2481cc; }
+        .nick-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: #17212b; padding: 8px; border-radius: 4px; }
+        .btn-copy { background: #2481cc; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <h1>Mini Jogo</h1>
-    <div id="status">Turno do X</div>
-    
-    <div class="board" id="board">
-        <div class="cell" onclick="makeMove(this, 0)"></div>
-        <div class="cell" onclick="makeMove(this, 1)"></div>
-        <div class="cell" onclick="makeMove(this, 2)"></div>
-        <div class="cell" onclick="makeMove(this, 3)"></div>
-        <div class="cell" onclick="makeMove(this, 4)"></div>
-        <div class="cell" onclick="makeMove(this, 5)"></div>
-        <div class="cell" onclick="makeMove(this, 6)"></div>
-        <div class="cell" onclick="makeMove(this, 7)"></div>
-        <div class="cell" onclick="makeMove(this, 8)"></div>
+    <h1>Central de Utilidades</h1>
+    <p>Desbloqueie ferramentas e links premium</p>
+
+    <!-- FERRAMENTA 1: GERADOR DE NICKS -->
+    <div class="box">
+        <h3>🔥 Gerador de Nicks Raros</h3>
+        <input type="text" id="nickInput" placeholder="Digite seu nome ou apelido...">
+        <button class="btn" onclick="liberarNick()">Gerar Nick Estiloso</button>
+        
+        <div id="resultadoNick" class="result">
+            <div class="nick-item">
+                <span id="n1">꧂ Nome ꧁</span>
+                <button class="btn-copy" onclick="copiarNick('n1')">Copiar</button>
+            </div>
+            <div class="nick-item">
+                <span id="n2">⚡ NOME ⚡</span>
+                <button class="btn-copy" onclick="copiarNick('n2')">Copiar</button>
+            </div>
+            <div class="nick-item">
+                <span id="n3">☯️ N_O_M_E ☯️</span>
+                <button class="btn-copy" onclick="copiarNick('n3')">Copiar</button>
+            </div>
+        </div>
     </div>
 
-    <button onclick="resetBoard()">Reiniciar</button>
+    <!-- FERRAMENTA 2: GRUPOS SECRETOS -->
+    <div class="box">
+        <h3>🎯 Grupos VIP Telegram</h3>
+        <p>Acesse os melhores canais parceiros de achados, memes e ferramentas da semana.</p>
+        <!-- SEU ANÚNCIO INSTALADO NO BOTÃO ABAIXO -->
+        <a href="https://omg10.com/4/11073482" target="_blank" class="btn btn-green">Ver Lista de Grupos</a>
+    </div>
 
     <script>
-        // Inicializa o WebApp do Telegram
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Abre o jogo em tela cheia no celular
+        tg.expand();
 
-        let board = ["", "", "", "", "", "", "", "", ""];
-        let currentPlayer = "X";
-        let gameActive = true;
-        const statusDisplay = document.getElementById("status");
+        // SEU ANÚNCIO INSTALADO NA FUNÇÃO ABAIXO
+        const meuAnuncio = "https://omg10.com/4/11073482";
 
-        const winningConditions = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8],
-            [0, 3, 6], [1, 4, 7], [2, 5, 8],
-            [0, 4, 8], [2, 4, 6]
-        ];
+        function liberarNick() {
+            const nome = document.getElementById('nickInput').value.trim();
+            if(!nome) return alert("Digite um nome primeiro!");
 
-        function makeMove(cell, index) {
-            if (board[index] !== "" || !gameActive) return;
+            // Atualiza os exemplos com o nome que o usuário digitou
+            document.getElementById('n1').innerText = `꧂ ${nome} ꧁`;
+            document.getElementById('n2').innerText = `⚡ ${nome.toUpperCase()} ⚡`;
+            document.getElementById('n3').innerText = `☯️ ${nome.split('').join('_')} ☯️`;
 
-            board[index] = currentPlayer;
-            cell.innerText = currentPlayer;
-            cell.style.color = currentPlayer === "X" ? "#ff4a4a" : "#4aff4a";
+            // Abre o seu anúncio da Monetag
+            window.open(meuAnuncio, '_blank');
 
-            checkResult();
+            // Mostra os nicks gerados na tela
+            document.getElementById('resultadoNick').style.display = "block";
         }
 
-        function checkResult() {
-            let roundWon = false;
-            for (let i = 0; i < winningConditions.length; i++) {
-                const [a, b, c] = winningConditions[i];
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-                    roundWon = true;
-                    break;
-                }
-            }
-
-            if (roundWon) {
-                statusDisplay.innerText = `Jogador ${currentPlayer} Venceu!`;
-                gameActive = false;
-                return;
-            }
-
-            if (!board.includes("")) {
-                statusDisplay.innerText = "Empate!";
-                gameActive = false;
-                return;
-            }
-
-            currentPlayer = currentPlayer === "X" ? "O" : "X";
-            statusDisplay.innerText = `Turno do ${currentPlayer}`;
-        }
-
-        function resetBoard() {
-            board = ["", "", "", "", "", "", "", "", ""];
-            currentPlayer = "X";
-            gameActive = true;
-            statusDisplay.innerText = "Turno do X";
-            document.querySelectorAll('.cell').forEach(cell => cell.innerText = "");
+        function copiarNick(id) {
+            const texto = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(texto);
+            alert("Nick copiado com sucesso!");
         }
     </script>
 </body>
